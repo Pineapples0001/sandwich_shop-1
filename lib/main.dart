@@ -28,8 +28,8 @@ class OrderItemDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('This is a placeholder for OrderItemDisplay');
-  }
+    return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
+}
 }
 
 class MyApp extends StatelessWidget {
