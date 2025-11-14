@@ -83,32 +83,18 @@ Widget build(BuildContext context) {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                width: 100, // <--- button width here
-                child: ElevatedButton(
-                  onPressed: _quantity < widget.maxQuantity ? _increaseQuantity : null,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (states) => states.contains(WidgetState.disabled) ? Colors.grey.shade400 : Colors.red,
-                    ),
-                    foregroundColor: WidgetStateProperty.all(Colors.white),
-                  ),
-                  child: const Text('Add'),
-                ),
+              StyledButton(
+                label: 'Add',
+                width: 100,
+                color: Colors.red,
+                onPressed: _quantity < widget.maxQuantity ? _increaseQuantity : null,
               ),
-              const SizedBox(width: 100), // <--- gap between buttons
-              SizedBox(
-                width: 100, // <--- button width here
-                child: ElevatedButton(
-                  onPressed: _quantity > 0 ? _decreaseQuantity : null,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (states) => states.contains(WidgetState.disabled) ? Colors.grey.shade400 : Theme.of(context).colorScheme.primary,
-                    ),
-                    foregroundColor: WidgetStateProperty.all(Colors.white),
-                  ),
-                  child: const Text('Remove'),
-                ),
+              const SizedBox(width: 24), // gap between buttons
+              StyledButton(
+                label: 'Remove',
+                width: 100,
+                color: Theme.of(context).colorScheme.primary,
+                onPressed: _quantity > 0 ? _decreaseQuantity : null,
               ),
             ],
           ),
@@ -117,6 +103,38 @@ Widget build(BuildContext context) {
     ),
   );
 }
+}
+
+class StyledButton extends StatelessWidget {
+  final String label;
+  final VoidCallback? onPressed;
+  final Color color;
+  final double width;
+
+  const StyledButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    required this.color,
+    this.width = 100,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
+            (states) => states.contains(WidgetState.disabled) ? Colors.grey.shade400 : color,
+          ),
+          foregroundColor: WidgetStateProperty.all(Colors.white),
+        ),
+        child: Text(label),
+      ),
+    );
+  }
 }
 
 class OrderItemDisplay extends StatelessWidget {
