@@ -84,28 +84,28 @@ Widget build(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 140, // <--- button width here
+                width: 100, // <--- button width here
                 child: ElevatedButton(
                   onPressed: _quantity < widget.maxQuantity ? _increaseQuantity : null,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (states) => states.contains(MaterialState.disabled) ? Colors.grey.shade400 : Colors.red,
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (states) => states.contains(WidgetState.disabled) ? Colors.grey.shade400 : Colors.red,
                     ),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
                   ),
                   child: const Text('Add'),
                 ),
               ),
-              const SizedBox(width: 24), // <--- gap between buttons
+              const SizedBox(width: 100), // <--- gap between buttons
               SizedBox(
-                width: 140, // <--- button width here
+                width: 100, // <--- button width here
                 child: ElevatedButton(
                   onPressed: _quantity > 0 ? _decreaseQuantity : null,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (states) => states.contains(MaterialState.disabled) ? Colors.grey.shade400 : Theme.of(context).colorScheme.primary,
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (states) => states.contains(WidgetState.disabled) ? Colors.grey.shade400 : Theme.of(context).colorScheme.primary,
                     ),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
                   ),
                   child: const Text('Remove'),
                 ),
