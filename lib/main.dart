@@ -1,5 +1,6 @@
 import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/repositories/order_repository.dart';
+import 'package:sandwich_shop/repositories/pricing_repository.dart';
 import 'package:flutter/material.dart';
 
 
@@ -36,6 +37,7 @@ class _OrderScreenState extends State<OrderScreen> {
   late final OrderRepository _orderRepository;
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
+  bool _isToasted = false;
   BreadType _selectedBreadType = BreadType.white;
 
   @override
@@ -119,6 +121,11 @@ class _OrderScreenState extends State<OrderScreen> {
               itemType: sandwichType,
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
+              // compute formatted total using PricingRepository
+              orderTotal: PricingRepository(
+                quantity: _orderRepository.quantity,
+                isFootlong: _isFootlong,
+              ).formattedTotal(),
             ),
             const SizedBox(height: 20),
             Row(
@@ -126,6 +133,7 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 const Text('six-inch', style: normalText),
                 Switch(
+                  key: const Key('sandwich_size_switch'),
                   value: _isFootlong,
                   onChanged: _onSandwichTypeChanged,
                 ),
@@ -169,6 +177,20 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ],
             ),
+          Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('untoasted', style: normalText),
+            Switch(
+              key: const Key('toasted_switch'),
+              value: _isToasted,
+              onChanged: (value) {
+                setState(() => _isToasted = value);
+              },
+            ),
+            const Text('toasted', style: normalText),
+          ],
+        ),
           ],
         ),
       ),
@@ -217,6 +239,7 @@ class OrderItemDisplay extends StatelessWidget {
   final String itemType;
   final BreadType breadType;
   final String orderNote;
+  final String orderTotal;
 
   const OrderItemDisplay({
     super.key,
@@ -224,6 +247,7 @@ class OrderItemDisplay extends StatelessWidget {
     required this.itemType,
     required this.breadType,
     required this.orderNote,
+    required this.orderTotal,
   });
 
   @override
@@ -235,6 +259,11 @@ class OrderItemDisplay extends StatelessWidget {
       children: [
         Text(
           displayText,
+          style: normalText,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Total: $orderTotal',
           style: normalText,
         ),
         const SizedBox(height: 8),

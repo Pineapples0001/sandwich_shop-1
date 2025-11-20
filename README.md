@@ -1,76 +1,42 @@
 # Sandwich Shop
 
-This is a simple Flutter app that allows users to order sandwiches.
-The app is built using Flutter and Dart, and it is designed primarily to be run in a web
-browser.
+Simple Flutter sample app demonstrating a sandwich order counter with controlled increment/decrement logic.
 
-## Install the essential tools
+## Features
+- Select sandwich type (six-inch / footlong)
+- Choose bread type from dropdown
+- Add order notes
+- Increment / decrement sandwich quantity with repository-driven limits
+- Buttons enable/disable based on repository `canIncrement` / `canDecrement`
 
-1. **Terminal**:
+## Project structure
+- lib/main.dart — UI and app entry
+- lib/repositories/order_repository.dart — quantity state and increment/decrement logic
+- lib/views/app_styles.dart — text styles and UI constants
 
-    - **macOS** – use the built-in Terminal app by pressing **⌘ + Space**, typing **Terminal**, and pressing **Return**.
-    - **Windows** – open the start menu using the **Windows** key. Then enter **cmd** to open the **Command Prompt**. Alternatively, you can use **Windows PowerShell** or **Windows Terminal**.
+## Requirements
+- Flutter SDK (stable)
+- Dart (bundled with Flutter)
+- Windows, macOS, or Linux development environment
 
-2. **Git** – verify that you have `git` installed by entering `git --version`, in the terminal.
-    If this is missing, download the installer from [Git's official site](https://git-scm.com/downloads?utm_source=chatgpt.com).
+## Run (Windows)
+1. Open VS Code in the project folder.
+2. Restore packages:
+   ```
+   flutter pub get
+   ```
+3. Run the app:
+   ```
+   flutter run
+   ```
 
-3. **Package managers**:
+## Notes about recent changes
+- The local `_quantity` field was removed from the stateful widget. Quantity is now owned by `OrderRepository`.
+- Increment/decrement callbacks now call repository methods and use `canIncrement` / `canDecrement` to determine whether buttons are enabled. This centralizes the business logic so UI only reflects repository state.
 
-    - **Homebrew** (macOS) – verify that you have `brew` installed with `brew --version`; if missing, follow the instructions on the [Homebrew installation page](https://brew.sh/).
-    - **Chocolatey** (Windows) – verify that you have `choco` installed with `choco --version`; if missing, follow the instructions on the [Chocolatey installation page](https://chocolatey.org/install).
+## Suggested commit messages
+- `refactor(order): remove local _quantity; delegate quantity to OrderRepository`
+- `feat(ui): enable/disable Add/Remove buttons via OrderRepository.canIncrement/canDecrement`
 
-4. **Flutter SDK** – verify that you have `flutter` installed and it is working with `flutter doctor`; if missing, install it using your package manager:
-
-    - **macOS**: `brew install --cask flutter`
-    - **Windows**: `choco install flutter`
-
-5. **Visual Studio Code** – verify that you have `code` installed with `code --version`; if missing, use your package manager to install it:
-
-    - **macOS**: `brew install --cask visual-studio-code`
-    - **Windows**: `choco install vscode`
-
-## Get the code
-
-### If this is your first time working on this project
-
-Enter the following commands in your terminal to clone the repository and
-open it in Visual Studio Code.
-You may want to change directory (`cd`) to the directory where you want to clone the
-repository first.
-
-```bash
-git clone --branch 3 https://github.com/manighahrmani/sandwich_shop
-cd sandwich_shop
-code .
-```
-
-### If you have already cloned the repository
-
-Enter the following commands in your terminal to switch to the correct branch.
-Remember to `cd` to the directory where you cloned the repository first.
-
-```bash
-git fetch origin
-git checkout 3
-```
-
-## Run the app
-
-Open the integrated terminal in Visual Studio Code by first opening the Command
-Palette with **⌘ + Shift + P** (macOS) or **Ctrl + Shift + P** (Windows) and
-typing **Terminal: Create New Terminal** then pressing **Enter**.
-
-In the terminal, run the following commands to install the dependencies and run
-the app in your web browser:
-
-```bash
-flutter pub get
-flutter run
-```
-
-## Get support
-
-Use [the dedicated Discord channel](https://discord.com/channels/760155974467059762/1370633732779933806)
-to ask your questions and get help from the community.
-Please provide as much context as possible, including the error messages you are seeing and
-screenshots (you can open Discord in your web browser).
+## Contributing
+Make commits with clear, single-purpose messages. Run the app and verify UI behavior after changes.
