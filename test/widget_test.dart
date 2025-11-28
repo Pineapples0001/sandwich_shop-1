@@ -116,6 +116,48 @@ void main() {
     });
   });
 
+  group('Cart Summary', () {
+    testWidgets('shows empty cart then updates after Add to Cart',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+
+      // Initially the summary should indicate empty cart
+      expect(find.text('Your cart is empty'), findsOneWidget);
+
+      // Tap Add to Cart (opens modal)
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add to Cart'));
+      await tester.pumpAndSettle();
+
+      // Close the modal
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Close'));
+      await tester.pumpAndSettle();
+
+      // Now the Cart Summary should show the added item and total
+      expect(find.text('1 × Veggie Delight'), findsOneWidget);
+      expect(find.text('Total: \$11.00'), findsOneWidget);
+    });
+
+    testWidgets('updates quantities and total when adding multiple times',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+
+      // Add twice
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add to Cart'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Close'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add to Cart'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Close'));
+      await tester.pumpAndSettle();
+
+      // Quantity should be 2 and total $22.00
+      expect(find.text('2 × Veggie Delight'), findsOneWidget);
+      expect(find.text('Total: \$22.00'), findsOneWidget);
+    });
+  });
+
   group('StyledButton', () {
     testWidgets('renders with icon and label', (WidgetTester tester) async {
       const testButton = StyledButton(

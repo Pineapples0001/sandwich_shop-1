@@ -277,6 +277,93 @@ class _OrderScreenState extends State<OrderScreen> {
                 backgroundColor: Colors.green,
               ),
               const SizedBox(height: 20),
+              // Styled Cart summary: shows current cart items and total price
+              Card(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('Cart Summary', style: heading2),
+                      const SizedBox(height: 8),
+                      if (_cart.items.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                            child: Text('Your cart is empty', style: normalText),
+                          ),
+                        )
+                      else ...[
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _cart.items.length,
+                          separatorBuilder: (c, i) => const Divider(),
+                          itemBuilder: (c, i) {
+                            final cartItem = _cart.items[i];
+                            final sandwich = cartItem.sandwich;
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.grey.shade200,
+                                child: Icon(
+                                  Icons.set_meal,
+                                  color: Colors.green.shade700,
+                                ),
+                              ),
+                              title: Text(
+                                '${cartItem.quantity} × ${sandwich.name}',
+                                style: heading2,
+                              ),
+                              subtitle: Text(
+                                  '${sandwich.breadType.name} • ${sandwich.isFootlong ? 'Footlong' : 'Six-inch'}',
+                                  style: normalText),
+                              trailing: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text('x${cartItem.quantity}', style: heading2),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            FutureBuilder<double>(
+                              future: _cart.totalPrice(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Text('Calculating total...', style: normalText);
+                                }
+                                final total = snapshot.data ?? 0.0;
+                                return Text(
+                                  'Total: \$${total.toStringAsFixed(2)}',
+                                  style: heading2,
+                                );
+                              },
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: null,
+                              icon: const Icon(Icons.payment),
+                              label: const Text('Checkout'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
