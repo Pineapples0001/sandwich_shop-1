@@ -3,6 +3,7 @@ import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/models/cart.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
 import 'package:sandwich_shop/repositories/pricing_repository.dart';
+import 'package:sandwich_shop/widgets/app_drawer.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final Cart cart;
@@ -127,8 +128,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
 
     return Scaffold(
+      drawer: AppDrawer(currentRoute: '/checkout', cart: widget.cart),
       appBar: AppBar(
-        title: const Text('Checkout', style: heading1),
+        title: Row(
+          children: [
+            SizedBox(
+              height: 40,
+              child: Image.asset('assets/images/logo.png'),
+            ),
+            const SizedBox(width: 12),
+            const Text('Checkout', style: heading1),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

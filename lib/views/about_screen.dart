@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
+import 'package:sandwich_shop/widgets/app_drawer.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -7,8 +8,18 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const AppDrawer(currentRoute: '/about'),
       appBar: AppBar(
-        title: const Text('About Us', style: heading1),
+        title: Row(
+          children: [
+            SizedBox(
+              height: 40,
+              child: Image.asset('assets/images/logo.png'),
+            ),
+            const SizedBox(width: 12),
+            const Text('About Us', style: heading1),
+          ],
+        ),
       ),
       body: const Padding(
         padding: EdgeInsets.all(16.0),

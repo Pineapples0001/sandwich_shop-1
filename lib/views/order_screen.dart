@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/views/cart_screen.dart';
+import 'package:sandwich_shop/views/profile_screen.dart';
 import 'package:sandwich_shop/models/cart.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
+import 'package:sandwich_shop/widgets/app_drawer.dart';
 
 class OrderScreen extends StatefulWidget {
   final int maxQuantity;
+  final Cart? cart;
 
-  const OrderScreen({super.key, this.maxQuantity = 10});
+  const OrderScreen({super.key, this.maxQuantity = 10, this.cart});
 
   @override
   State<OrderScreen> createState() {
@@ -16,7 +19,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  final Cart _cart = Cart();
+  late final Cart _cart;
   final TextEditingController _notesController = TextEditingController();
 
   SandwichType _selectedSandwichType = SandwichType.veggieDelight;
@@ -27,6 +30,7 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
+    _cart = widget.cart ?? Cart();
     _notesController.addListener(() {
       setState(() {});
     });
@@ -85,6 +89,15 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
+  void _navigateToProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ProfileScreen(),
+      ),
+    );
+  }
+
   List<DropdownMenuEntry<SandwichType>> _buildSandwichTypeEntries() {
     List<DropdownMenuEntry<SandwichType>> entries = [];
     for (SandwichType type in SandwichType.values) {
@@ -123,17 +136,20 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(currentRoute: '/order', cart: _cart),
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SizedBox(
-            height: 100,
-            child: Image.asset('assets/images/logo.png'),
-          ),
-        ),
-        title: const Text(
-          'Sandwich Counter',
-          style: heading1,
+        title: Row(
+          children: [
+            SizedBox(
+              height: 40,
+              child: Image.asset('assets/images/logo.png'),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Sandwich Counter',
+              style: heading1,
+            ),
+          ],
         ),
       ),
       body: Center(
@@ -231,6 +247,13 @@ class _OrderScreenState extends State<OrderScreen> {
                 'Cart: ${_cart.countOfItems} items - £${_cart.totalPrice.toStringAsFixed(2)}',
                 style: normalText,
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              StyledButton(
+                onPressed: _navigateToProfile,
+                icon: Icons.person,
+                label: 'My Profile',
+                backgroundColor: Colors.deepPurple,
               ),
               const SizedBox(height: 20),
             ],
