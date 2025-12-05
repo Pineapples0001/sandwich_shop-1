@@ -1,3 +1,4 @@
+// Additional tests merged into existing suite below
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sandwich_shop/models/cart.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
@@ -74,6 +75,13 @@ void main() {
       expect(() => cart.remove(sandwichA), returnsNormally);
     });
 
+    test('removeItem removes entire item', () {
+      cart.add(sandwichA, quantity: 2);
+      cart.removeItem(sandwichA);
+      expect(cart.getQuantity(sandwichA), 0);
+      expect(cart.isEmpty, isTrue);
+    });
+
     test('should clear all items', () {
       cart.add(sandwichA);
       cart.add(sandwichB);
@@ -109,6 +117,14 @@ void main() {
       expect(cart.getQuantity(sandwichA), 1);
       expect(cart.getQuantity(sandwichB), 1);
       expect(cart.length, 2);
+    });
+
+    test('updateQuantity sets and removes at <= 0', () {
+      cart.updateQuantity(sandwichA, 3);
+      expect(cart.getQuantity(sandwichA), 3);
+      cart.updateQuantity(sandwichA, 0);
+      expect(cart.getQuantity(sandwichA), 0);
+      expect(cart.isEmpty, isTrue);
     });
 
     test('should not allow negative quantities', () {

@@ -26,8 +26,26 @@ class Cart {
     }
   }
 
+  // Removes the entire item from the cart regardless of quantity
+  void removeItem(Sandwich sandwich) {
+    _items.remove(sandwich);
+  }
+
   void clear() {
     _items.clear();
+  }
+
+  // Updates quantity of a sandwich; if quantity <= 0, removes the item
+  void updateQuantity(Sandwich sandwich, int quantity) {
+    if (quantity <= 0) {
+      _items.remove(sandwich);
+      return;
+    }
+    if (_items.containsKey(sandwich)) {
+      _items[sandwich] = quantity;
+    } else {
+      _items[sandwich] = quantity;
+    }
   }
 
   double get totalPrice {
