@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:sandwich_shop/main.dart' as app;
-import 'package:sandwich_shop/models/sandwich.dart';
 import 'package:sandwich_shop/widgets/common_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +12,7 @@ void main() {
       // Mock SharedPreferences for testing
       SharedPreferences.setMockInitialValues({});
 
-      app.main();
+      await app.mainTest(initializeFirebase: false);
       await tester.pumpAndSettle();
 
       // Test 1: Add a sandwich to the cart and verify it is in the cart

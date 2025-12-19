@@ -23,12 +23,32 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   }
 
   Future<void> _loadOrders() async {
-    final List<SavedOrder> orders = await _databaseService.getOrders();
-    if (mounted) {
-      setState(() {
-        _orders = orders;
-        _isLoading = false;
-      });
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      debugPrint('=== ORDER HISTORY: Loading orders ===');
+      final List<SavedOrder> orders = await _databaseService.getOrders();
+      debugPrint('=== ORDER HISTORY: Loaded ${orders.length} orders ===');
+      if (mounted) {
+        setState(() {
+          _orders = orders;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('=== ORDER HISTORY: Error loading orders: $e ===');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load orders: $e')),
+        );
+      }
     }
   }
 

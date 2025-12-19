@@ -1,3 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'sandwich.g.dart';
+
 enum BreadType { white, wheat, wholemeal }
 
 enum SandwichType {
@@ -7,6 +11,7 @@ enum SandwichType {
   meatballMarinara,
 }
 
+@JsonSerializable()
 class Sandwich {
   final SandwichType type;
   final bool isFootlong;
@@ -17,6 +22,11 @@ class Sandwich {
     required this.isFootlong,
     required this.breadType,
   });
+
+  factory Sandwich.fromJson(Map<String, dynamic> json) =>
+      _$SandwichFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SandwichToJson(this);
 
   String get name {
     switch (type) {
