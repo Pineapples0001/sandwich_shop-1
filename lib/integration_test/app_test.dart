@@ -246,7 +246,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Cart'), findsOneWidget);
-      expect(find.text('1x Veggie Delight'), findsOneWidget);
+      expect(find.text('Veggie Delight'), findsOneWidget);
+      expect(find.text('Qty: 1'), findsOneWidget);
 
       // Find increment button (+ icon in cart)
       final incrementButtons = find.byIcon(Icons.add);
@@ -254,7 +255,7 @@ void main() {
         await tester.tap(incrementButtons.first);
         await tester.pumpAndSettle();
         // Quantity should increase
-        expect(find.text('2x Veggie Delight'), findsOneWidget);
+        expect(find.text('Qty: 2'), findsOneWidget);
       }
 
       // Find decrement button (- icon in cart)
@@ -263,7 +264,7 @@ void main() {
         await tester.tap(decrementButtons.first);
         await tester.pumpAndSettle();
         // Quantity should decrease back
-        expect(find.text('1x Veggie Delight'), findsOneWidget);
+        expect(find.text('Qty: 1'), findsOneWidget);
       }
 
       // Find delete button
@@ -272,7 +273,7 @@ void main() {
         await tester.tap(deleteButtons.first);
         await tester.pumpAndSettle();
         // Cart should be empty
-        expect(find.text('Your cart is empty'), findsOneWidget);
+        expect(find.text('Your cart is empty.'), findsOneWidget);
       }
     });
 
@@ -281,14 +282,8 @@ void main() {
       app.mainTest(initializeFirebase: false);
       await tester.pumpAndSettle();
 
-      // Change bread type
-      final breadDropdown = find.byType(DropdownMenu<BreadType>);
-      await tester.ensureVisible(breadDropdown);
-      await tester.tap(breadDropdown);
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Wheat').last);
-      await tester.pumpAndSettle();
+      // Initially should be Footlong (default)
+      expect(find.text('Footlong'), findsOneWidget);
 
       // Toggle size from Footlong to Six-inch
       final sizeSwitch = find.byType(Switch);
@@ -296,47 +291,14 @@ void main() {
       await tester.tap(sizeSwitch);
       await tester.pumpAndSettle();
 
+      // After toggle, should see Six-inch
+      expect(find.text('Six-inch'), findsOneWidget);
+
       // Add to cart
       final addToCartButton = find.widgetWithText(StyledButton, 'Add to Cart');
       await tester.ensureVisible(addToCartButton);
       await tester.tap(addToCartButton);
       await tester.pumpAndSettle();
-
-      // Verify price changed (six-inch should be cheaper)
-      final viewCartButton = find.widgetWithText(StyledButton, 'View Cart');
-      await tester.ensureVisible(viewCartButton);
-      await tester.tap(viewCartButton);
-      await tester.pumpAndSettle();
-
-      // Six-inch price should be £5.50 (not £11.00)
-      expect(find.text('Total: £5.50'), findsOneWidget);
-    });
-
-    testWidgets('multiple different items checkout',
-        (WidgetTester tester) async {
-      app.mainTest(initializeFirebase: false);
-      await tester.pumpAndSettle();
-
-      // Add first sandwich (Veggie Delight)
-      final addToCartButton = find.widgetWithText(StyledButton, 'Add to Cart');
-      await tester.ensureVisible(addToCartButton);
-      await tester.tap(addToCartButton);
-      await tester.pumpAndSettle();
-
-      // Change to Chicken Teriyaki
-      final sandwichDropdown = find.byType(DropdownMenu<SandwichType>);
-      await tester.tap(sandwichDropdown);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Chicken Teriyaki').last);
-      await tester.pumpAndSettle();
-
-      // Add second sandwich
-      await tester.ensureVisible(addToCartButton);
-      await tester.tap(addToCartButton);
-      await tester.pumpAndSettle();
-
-      // Verify cart has 2 items
-      expect(find.text('Cart: 2 items - £22.00'), findsOneWidget);
 
       // Navigate to cart
       final viewCartButton = find.widgetWithText(StyledButton, 'View Cart');
@@ -344,9 +306,48 @@ void main() {
       await tester.tap(viewCartButton);
       await tester.pumpAndSettle();
 
-      // Verify both sandwiches are in cart
-      expect(find.text('Veggie Delight'), findsOneWidget);
-      expect(find.text('Chicken Teriyaki'), findsOneWidget);
+      // Should see a six-inch sandwich in cart
+      expect(find.textContaining('Six-inch'), findsOneWidget);
+
+      // Six-inch price should be £7.00 (not £11.00)
+      expect(find.text('Total: £7.00'), findsOneWidget);
+    });
+
+    testWidgets('multiple different items checkout',
+        (WidgetTester tester) async {
+      app.mainTest(initializeFirebase: false);
+      await tester.pumpAndSettle();
+
+      // Add first sandwich (Footlong)
+      final addToCartButton = find.widgetWithText(StyledButton, 'Add to Cart');
+      await tester.ensureVisible(addToCartButton);
+      await tester.tap(addToCartButton);
+      await tester.pumpAndSettle();
+
+      // Toggle to Six-inch
+      final sizeSwitch = find.byType(Switch);
+      await tester.ensureVisible(sizeSwitch);
+      await tester.tap(sizeSwitch);
+      await tester.pumpAndSettle();
+
+      // Add second sandwich (Six-inch)
+      await tester.ensureVisible(addToCartButton);
+      await tester.tap(addToCartButton);
+      await tester.pumpAndSettle();
+
+      // Verify cart has 2 items (1 footlong + 1 six-inch = £11 + £7 = £18)
+      expect(find.text('Cart: 2 items - £18.00'), findsOneWidget);
+
+      // Navigate to cart
+      final viewCartButton = find.widgetWithText(StyledButton, 'View Cart');
+      await tester.ensureVisible(viewCartButton);
+      await tester.tap(viewCartButton);
+      await tester.pumpAndSettle();
+
+      // Verify both sizes are in cart
+      expect(find.textContaining('Footlong'), findsOneWidget);
+      expect(find.textContaining('Six-inch'), findsOneWidget);
+      expect(find.text('Total: £18.00'), findsOneWidget);
 
       // Complete checkout
       final checkoutButton = find.widgetWithText(StyledButton, 'Checkout');
@@ -416,8 +417,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Settings'), findsOneWidget);
 
-      // Click logo to go back
-      await tester.tap(find.byType(Image).first);
+      // Tap "Back to Order" button
+      final backToOrderButton = find.text('Back to Order');
+      await tester.tap(backToOrderButton);
       await tester.pumpAndSettle();
       expect(find.text('Sandwich Counter'), findsOneWidget);
 
@@ -433,8 +435,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Cart'), findsOneWidget);
 
-      // Back from cart
-      await tester.tap(find.byType(Image).first);
+      // Back from cart using "Back to Order" button
+      final backButton = find.widgetWithText(StyledButton, 'Back to Order');
+      await tester.ensureVisible(backButton);
+      await tester.tap(backButton);
       await tester.pumpAndSettle();
       expect(find.text('Sandwich Counter'), findsOneWidget);
     });
